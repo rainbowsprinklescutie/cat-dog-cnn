@@ -1,16 +1,20 @@
-# This is a sample Python script.
+import os
+import matplotlib.pyplot as plt
+from matplotlib import image as mpimg
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+cat_dir = os.path.join('dataset/cats_set')
+dog_dir = os.path.join('dataset/dogs_set')
 
+cat_names = os.listdir(cat_dir)
+dog_names = os.listdir(dog_dir)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+cat_images = [os.path.join(cat_dir, cat_name) for cat_name in cat_names]
+dog_images = [os.path.join(dog_dir, dog_name) for dog_name in dog_names]
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+for i, img_path in enumerate(cat_images[:8] + dog_images[:8]):
+    splot = plt.subplot(4, 4, i+1)
+    splot.axis('off')
+    print(img_path)
+    img = mpimg.imread(img_path)
+    plt.imshow(img)
+plt.show()
