@@ -2,8 +2,15 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib import image as mpimg
 
-cat_dir = os.path.join('dataset/cats_set')
-dog_dir = os.path.join('dataset/dogs_set')
+import tensorflow as tf
+from tensorflow.keras.utils import image_dataset_from_directory
+
+base_dataset_dir = 'dataset'
+
+# Visualize the Data
+
+cat_dir = os.path.join(base_dataset_dir, 'cats_set')
+dog_dir = os.path.join(base_dataset_dir, 'dogs_set')
 
 cat_names = os.listdir(cat_dir)
 dog_names = os.listdir(dog_dir)
@@ -17,4 +24,32 @@ for i, img_path in enumerate(cat_images[:8] + dog_images[:8]):
     print(img_path)
     img = mpimg.imread(img_path)
     plt.imshow(img)
+plt.show()
+
+# Splitting Dataset
+
+train_datagen = image_dataset_from_directory(base_dataset_dir,
+                                             image_size=(200, 200),
+                                             subset='training',
+                                             seed=1,
+                                             validation_split=0.1,
+                                             batch_size=32)
+test_datagen = image_dataset_from_directory(base_dataset_dir,
+                                            image_size=(200, 200),
+                                            subset='validation',
+                                            seed=1,
+                                            validation_split=0.1,
+                                            batch_size=32)
+
+class_names = train_datagen.class_names
+print(f"class_names: {class_names}")
+
+for images, labels in train_datagen.take(1):
+    batch_actual_size = images.shape[0]
+    for index in range(batch_actual_size):
+        ax = plt.subplot(4, 8, index+1)
+        plt.imshow(images[index].numpy().astype("uint8"))
+        plt.title(class_names[labels[index]])
+        plt.axis('off')
+plt.tight_layout()
 plt.show()
