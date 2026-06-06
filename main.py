@@ -1,8 +1,8 @@
 import os
 import matplotlib.pyplot as plt
+from keras import Sequential, layers
 from matplotlib import image as mpimg
 
-import tensorflow as tf
 from tensorflow.keras.utils import image_dataset_from_directory
 
 base_dataset_dir = 'dataset'
@@ -53,3 +53,28 @@ for images, labels in train_datagen.take(1):
         plt.axis('off')
 plt.tight_layout()
 plt.show()
+
+# Model Architecture
+
+model = Sequential([
+    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(200, 200, 3)),
+    layers.MaxPooling2D(pool_size=(2, 2)),
+    layers.Conv2D(64, (3, 3), activation='relu'),
+    layers.MaxPooling2D(pool_size=(2, 2)),
+    layers.Conv2D(64, (3, 3), activation='relu'),
+    layers.MaxPooling2D(pool_size=(2, 2)),
+    layers.Conv2D(64, (3, 3), activation='relu'),
+    layers.MaxPooling2D(pool_size=(2, 2)),
+    layers.Flatten(),
+    layers.Dense(512, activation='relu'),
+    layers.BatchNormalization(),
+    layers.Dense(512, activation='relu'),
+    layers.Dropout(0.1),
+    layers.BatchNormalization(),
+    layers.Dense(512, activation='relu'),
+    layers.Dropout(0.1),
+    layers.BatchNormalization(),
+    layers.Dense(1, activation='sigmoid')
+])
+
+model.summary()
