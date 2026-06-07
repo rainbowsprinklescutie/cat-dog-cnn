@@ -2,3 +2,5 @@
 tensorflow
 matplotlib
 keras-nightly
+pandas
+pillow
