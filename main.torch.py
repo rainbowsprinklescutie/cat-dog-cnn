@@ -121,6 +121,42 @@ for epoch in range(epochs):
 
     print(f"Epoch {epoch + 1}, Loss: {running_loss / len(train_loader)}")
 print("Finished Training")
+
+model.eval()  # Set model to evaluation mode (turns off dropout/batchnorm)
+test_loss = 0
+correct = 0
+total = 0
+
+with torch.no_grad():  # Disable gradient calculation to save memory and speed up
+    for images_tf, labels_tf in test_loader:
+        # Convert and format data (same as training loop)
+        images = torch.from_numpy(images_tf.numpy())
+        labels = torch.from_numpy(labels_tf.numpy())
+
+        images = (images / 255.0).permute(0, 3, 1, 2).to(device)
+        labels = labels.float().to(device).view(-1, 1)
+
+        # Forward pass
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+
+        test_loss += loss.item()
+
+        # Calculate accuracy
+        # Since we use sigmoid, predicted class is 1 if output > 0.5, else 0
+        predicted = (outputs > 0.5).float()
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
+
+avg_test_loss = test_loss / len(test_loader)
+accuracy = 100 * correct / total
+
+print(f"\nEvaluation Results:")
+print(f"Test Loss: {avg_test_loss:.4f}")
+print(f"Test Accuracy: {accuracy:.2f}%")
+
+torch.save(model.state_dict(), 'model_pytorch.pth')
+
 # class_names = train_datagen.class_names
 # print(f"class_names: {class_names}")
 #
