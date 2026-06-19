@@ -22,8 +22,8 @@ test_datagen = image_dataset_from_directory(base_dataset_dir,
                                             validation_split=0.1,
                                             batch_size=32)
 
-train_loader = DataLoader(train_datagen, batch_size=32, shuffle=True)
-test_loader = DataLoader(test_datagen, batch_size=32, shuffle=False)
+train_loader = train_datagen # DataLoader(train_datagen, batch_size=32, shuffle=True)
+test_loader = test_datagen # DataLoader(test_datagen, batch_size=32, shuffle=False)
 
 # model = Sequential([
 #     layers.Conv2D(32, (3, 3), activation='relu', input_shape=(200, 200, 3)),
@@ -88,6 +88,39 @@ model = Net().to(device)
 criterion = nn.BCELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
+epochs = 10
+
+for epoch in range(epochs):
+    model.train()
+    running_loss = 0
+    for i , (images_tf, labels_tf) in enumerate(train_loader):
+        # 1. Convert TensorFlow Tensor -> NumPy -> PyTorch Tensor
+        images = torch.from_numpy(images_tf.numpy())
+        labels = torch.from_numpy(labels_tf.numpy())
+
+        # 2. Rescale (0-255 to 0-1) and Reorder (H,W,C to C,H,W)
+        # We divide by 255.0 because NNs perform much better with small values
+        images = (images / 255.0).permute(0, 3, 1, 2).to(device)
+        labels = labels.float().to(device).view(-1, 1)
+
+        optimizer.zero_grad()
+
+        # 3. Forward pass
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+
+        # 4. Backward pass (calculate gradients)
+        loss.backward()
+
+        # 5. Optimize (update weights)
+        optimizer.step()
+
+        running_loss += loss.item()
+
+        if i % 100 == 0: print(f"{i} images done")
+
+    print(f"Epoch {epoch + 1}, Loss: {running_loss / len(train_loader)}")
+print("Finished Training")
 # class_names = train_datagen.class_names
 # print(f"class_names: {class_names}")
 #
