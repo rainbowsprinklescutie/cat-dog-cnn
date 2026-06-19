@@ -56,6 +56,18 @@ model = Sequential([
     layers.Dense(1, activation='sigmoid')
 ])
 
+# model = Sequential([
+#     layers.Conv2D(32, (3, 3), activation='relu', input_shape=(200, 200, 3)),
+#     layers.MaxPooling2D((2, 2)),
+#     layers.Conv2D(64, (3, 3), activation='relu'),
+#     layers.MaxPooling2D((2, 2)),
+#     layers.Conv2D(128, (3, 3), activation='relu'),
+#     layers.MaxPooling2D((2, 2)),
+#     layers.Flatten(),
+#     layers.Dense(512, activation='relu'),
+#     layers.Dense(1, activation='sigmoid')
+# ])
+
 model.summary()
 
 # Model Compilation and Training
