@@ -85,7 +85,7 @@ class Net(nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = Net().to(device)
 
-criterion = nn.CrossEntropyLoss()
+criterion = nn.BCELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # class_names = train_datagen.class_names
