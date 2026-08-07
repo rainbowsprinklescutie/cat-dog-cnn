@@ -1,0 +1,4 @@
+
+tensorflow
+matplotlib
+keras-nightly
